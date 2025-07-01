@@ -1,0 +1,21 @@
+# Two boxes:
+#   cnc      - the vulnerable Sakura C2 server
+#   exploit  - the attacker box (python + pwntools + the exploits)
+services:
+  cnc:
+    build:
+      context: .
+      dockerfile: Dockerfile.cnc
+    image: sakura-cnc
+    container_name: sakura-cnc
+    tty: true           
+
+  exploit:
+    build:
+      context: .
+      dockerfile: Dockerfile.exploit
+    image: sakura-exploit
+    container_name: sakura-exploit
+    depends_on:
+      - cnc
+    network_mode: "service:cnc"   # share the CNC's network stack (same 127.0.0.1)
